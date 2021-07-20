@@ -6,16 +6,20 @@ const finished = document.querySelectorAll('input[type=checkbox]');
 
 const line_through = 'lineThrough';
 
-let itemList, id;
+let itemList = [];
+let id;
 
 let data = localStorage.getItem("TODO");
 
-try {
+if (data) {
     itemList = JSON.parse(data);
+    if (typeof itemList === "string") {
+        itemList = [];
+    }
     id = itemList.length;
     loadList(itemList);
 }
-catch (err) {
+else {
     itemList = [];
     id = 0;
 }
@@ -25,14 +29,14 @@ const date = new Date();
 
 dateElement.innerHTML = date.toLocaleDateString("en-US", options);
 
-function addItem(item, done) {
+function addItem(item, number, done) {
     const line = done ? line_through : '';
     const required =
         `   <label class="thing ${line}"> ${item} 
-            <input type="checkbox" id = "${id}">
-            <span class="box"></span>
+                <input type="checkbox" id="${number}">
+                <span class="box"></span>
             </label><br>
-            <i class="fa fa-trash-o de" job="delete" id="${id}"></i>`;
+            <i class="fa fa-trash-o de" job="delete" id="${number}"></i>`;
 
     const position = 'beforeend';
     const container = '<li class="item">';
@@ -44,14 +48,32 @@ function addItem(item, done) {
 };
 
 const removeItem = function (element) {
-    /*const position = element.parentNode.childNodes;
+    /* be able to delete from itemList array to have localStorage work*/
+    const position = element.parentNode.childNodes;
     const parent = position[1].removeChild(position[1].childNodes[0]);
-    localStorage.removeItem("TODO", parent);*/
+    localStorage.removeItem("TODO", parent);
+    for (let l = 0; l < itemList.length; l++) {
+        if (element.id == itemList[l].each) {
+            const temp = itemList.slice(l + 1, itemList.length)
+            itemList = itemList.slice(0, l);
+            for (let m = 0; m < temp.length; m++) {
+                itemList.push(temp[m]);
+            }
+        }
+    }
     element.parentNode.parentNode.removeChild(element.parentNode);
 };
 
 const completeItem = function (element) {
     element.parentNode.classList.toggle(line_through);
+    console.log(element);
+
+    if (itemList[element.id].finished) {
+        itemList[element.id].finished = false;
+    }
+    else {
+        itemList[element.id].finished = true;
+    }
 };
 
 const clear = function () {
@@ -60,7 +82,9 @@ const clear = function () {
 };
 
 function loadList(array) {
-    array.forEach(element => addItem(element.name, element.finished));
+    if (array) {
+        array.forEach(element => addItem(element.name, element.each, element.finished));
+    }
 };
 
 list.addEventListener('click', function (e) {
@@ -79,6 +103,7 @@ list.addEventListener('click', function (e) {
     if (check && check === 'INPUT') {
         completeItem(element);
     }
+    localStorage.setItem("TODO", JSON.stringify(itemList));
 });
 
 reset.addEventListener('click', function (e) {
@@ -90,17 +115,15 @@ document.addEventListener("keyup", function (even) {
         const toDo = input.value;
 
         if (toDo) {
-            addItem(toDo)
+            addItem(toDo, id, false)
             itemList.push({
                 name: toDo,
-                id: id,
+                each: id,
+                finished: false,
             })
+            localStorage.setItem("TODO", JSON.stringify(itemList));
             id++;
         }
         input.value = '';
     }
 });
-
-
-
-
