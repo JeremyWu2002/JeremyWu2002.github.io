@@ -4,6 +4,10 @@ const list = document.getElementById('list');
 const input = document.getElementById('input');
 const finished = document.querySelectorAll('input[type=checkbox]');
 const add = document.querySelector('.btn');
+const nav = document.querySelector('.nav');
+const container = document.querySelector('.container');
+const monday = document.querySelector('.monday');
+const header = document.querySelector('.header');
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -12,13 +16,30 @@ const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 
 const line_through = 'lineThrough';
 
-const day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const day = ['Monday,', 'Tuesday,', 'Wednesday,', 'Thursday,', 'Friday,', 'Saturday,', 'Sunday,'];
+const thirtyOneDays = ['1', '3', '5', '7', '8', '10', '12'];
+const thirtyDays = ['4', '6', '9', '11'];
+const february = '2';
+let daysInMonth = 31;
+let currently = 0;
+let wantedDay = 0;
+
+/* finding today's date and separating it into arrays*/
+const options = { weekday: "long", month: "short", day: "numeric" };
+const date = new Date();
+
+dateElement.innerHTML = date.toLocaleDateString("en-US", options);
+const words = date.toLocaleDateString("en-US", options);
+const numericDate = date.toLocaleDateString();
+const separatedToday = words.split(' ');
+const separatedTodayNum = numericDate.split('/');
+
+console.log(numericDate, words, separatedToday, separatedTodayNum);
 
 let itemList = [];
 let id;
 
-let data = localStorage.getItem("TODO");
-
+let data = localStorage.getItem(numericDate);
 if (data) {
     itemList = JSON.parse(data);
     if (typeof itemList === "string") {
@@ -32,13 +53,17 @@ else {
     id = 0;
 }
 
-const options = { weekday: "long", month: "short", day: "numeric" };
-const date = new Date();
+/*find what day of the week it is*/
+function findTodayindex() {
+    for (let l = 0; l < day.length; l++) {
+        if (day[l] === separatedToday[0]) {
+            currently = l;
+        }
+    }
+}
+findTodayindex();
 
-dateElement.innerHTML = date.toLocaleDateString("en-US", options);
-const numericDate = date.toLocaleDateString(options);
-console.log(numericDate);
-
+/* openning and closing the modal*/
 const openModal = function () {
     modal.classList.remove('hidden');
     overlay.classList.remove('hidden');
@@ -56,14 +81,38 @@ overlay.addEventListener('click', closeModal);
 add.addEventListener('click', function (e) {
     const toDo = activity.value;
     const chosenDay = address.value;
+    const day = chosenDay.split('-');
 
-    newItem(toDo);
+    if (day[0] == separatedTodayNum[2] && parseInt(day[1], 0) == parseInt(separatedTodayNum[0], 0) && day[2] == separatedTodayNum[1]) {
+        newItem(toDo);
+    }
+
+    const addingDay = `${parseInt(day[1], 0)}/${day[2]}/${day[0]}`;
+
+    let chosenDayList = [];
+    let num;
+
+    let info = localStorage.getItem(addingDay);
+    if (info) {
+        chosenDayList = JSON.parse(info);
+        if (typeof chosenDayList === "string") {
+            chosenDayList = [];
+        }
+        num = chosenDayList.length;
+        loadList(chosenDayList);
+    }
+    else {
+        chosenDayList = [];
+        num = 0;
+    }
+    addingItemChosenDay(toDo, chosenDayList, addingDay, num);
+    console.log(chosenDayList);
     activity.value = '';
 
     console.log(toDo, chosenDay);
     closeModal();
 });
-
+// when modal is open, enter closes the modal
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
         closeModal();
@@ -94,7 +143,7 @@ const removeItem = function (element) {
     /* be able to delete from itemList array to have localStorage work*/
     const position = element.parentNode.childNodes;
     const parent = position[1].removeChild(position[1].childNodes[0]);
-    localStorage.removeItem("TODO", parent);
+    localStorage.removeItem(numericDate, parent);
     for (let l = 0; l < itemList.length; l++) {
         if (element.id == itemList[l].each) {
             const temp = itemList.slice(l + 1, itemList.length)
@@ -136,6 +185,7 @@ function loadList(array) {
     }
 };
 
+/* adding new item to the local storage*/
 function newItem(adding) {
     if (adding) {
         addItem(adding, id, false)
@@ -144,7 +194,19 @@ function newItem(adding) {
             each: id,
             finished: false,
         })
-        localStorage.setItem("TODO", JSON.stringify(itemList));
+        localStorage.setItem(numericDate, JSON.stringify(itemList));
+        id++;
+    }
+}
+
+function addingItemChosenDay(adding, list, date, num) {
+    if (adding) {
+        list.push({
+            name: adding,
+            each: num,
+            finished: false,
+        })
+        localStorage.setItem(date, JSON.stringify(list));
         id++;
     }
 }
@@ -165,7 +227,7 @@ list.addEventListener('click', function (e) {
     if (check && check === 'INPUT') {
         completeItem(element);
     }
-    localStorage.setItem("TODO", JSON.stringify(itemList));
+    localStorage.setItem(numericDate, JSON.stringify(itemList));
 });
 
 //clearing when the reset button is clicked
@@ -183,4 +245,49 @@ document.addEventListener("keyup", function (even) {
     }
 });
 
+// change color on nav when hovered
+const handleHover = function (e) {
+    if (e.target.classList.contains('nav__link')) {
+        const link = e.target;
+        const sibling = link.closest('nav').querySelectorAll('.nav__link');
 
+        sibling.forEach(el => {
+            if (el !== link) el.style.opacity = this;
+        })
+    }
+};
+
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+// allows the nav to direct to the correct location
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (e.target.classList.contains('nav__link')) {
+        const id = e.target.getAttribute('href');
+        if (id !== '#') {
+            document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+});
+
+const navheight = nav.getBoundingClientRect().height;
+
+/* adding a sticky navigtion header*/
+const stickyNav = function (entries) {
+    const [entry] = entries;
+    if (!entry.isIntersecting) {
+        nav.classList.add('sticky');
+    }
+    else {
+        nav.classList.remove('sticky');
+    }
+};
+
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+    root: null,
+    threshold: 0,
+    rootMargin: `-${navheight}px`,
+});
+headerObserver.observe(header);

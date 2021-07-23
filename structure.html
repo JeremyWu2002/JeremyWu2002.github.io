@@ -17,10 +17,10 @@
             <h4>To-Do List</h4>
             <ul class="nav__links">
                 <li class="nav__item">
-                    <a class="nav__link" href="#section--1">Today</a>
+                    <a class="nav__link" href="#container">Today</a>
                 </li>
                 <li class="nav__item">
-                    <a class="nav__link" href="#section--2">This Week</a>
+                    <a class="nav__link" href="#week">This Week</a>
                 </li>
                 <li class="nav__item">
                     <a class="nav__link" href="#section--3">This Month</a>
@@ -31,7 +31,7 @@
             </ul>
         </nav>
     </header>
-    <div class="container">
+    <section class="container" id="container">
         <div class="day">
             <div class="clear">
                 <button class="reset">Clear</button>
@@ -46,7 +46,85 @@
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
             <input type="text" id="input" placeholder="Add a to-do">
         </div>
-        <script defer src="script.js"></script>
+    </section>
+
+    <div class="overlay hidden"></div>
+
+    <section class="week" id="week">
+        <div class="monday">
+            <div class="weekday">
+                <h4>Monday</h4>
+            </div>
+            <div class="daybox">
+                <button class="view">View</button>
+            </div>
+        </div>
+        </div>
+        <div class="tuesday">
+            <div class="weekday">
+                <h4>Tuesday</h4>
+            </div>
+            <div class="daybox">
+                <button class="view">View</button>
+            </div>
+        </div>
+        <div class="wednesday">
+            <div class="weekday">
+                <h4>Wednesday</h4>
+            </div>
+            <div class="daybox">
+                <button class="view">View</button>
+            </div>
+        </div>
+        <div class="thursday">
+            <div class="weekday">
+                <h4>Thurday</h4>
+            </div>
+            <div class="daybox">
+                <button class="view">View</button>
+            </div>
+        </div>
+        <div class="friday">
+            <div class="weekday">
+                <h4>Friday</h4>
+            </div>
+            <div class="daybox">
+                <button class="view">View</button>
+            </div>
+        </div>
+        <div class="saturday">
+            <div class="weekday">
+                <h4>Saturday</h4>
+            </div>
+            <div class="daybox">
+                <button class="view">View</button>
+            </div>
+        </div>
+        <div class="sunday">
+            <div class="weekday">
+                <h4>Sunday</h4>
+            </div>
+            <div class="daybox">
+                <button class="view">View</button>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="modal hidden" id="modal">
+        <button class="btn--close-modal">&times;</button>
+        <h2 class="modal__header">
+            Enter new to-do
+        </h2>
+        <form class="modal__form">
+            <label>Date </label>
+            <input type="date" id="address" />
+            <label>Add a to-do</label>
+            <input type="text" id="activity" placeholder="Add a to-do" />
+            <button class="btn">Add</button>
+        </form>
+    </div>
+    <script defer src="script.js"></script>
 </body>
 
 </html>
