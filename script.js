@@ -4,6 +4,13 @@ const list = document.getElementById('list');
 const input = document.getElementById('input');
 const finished = document.querySelectorAll('input[type=checkbox]');
 const add = document.querySelector('.btn');
+<<<<<<< HEAD
+=======
+const nav = document.querySelector('.nav');
+const container = document.querySelector('.container');
+const monday = document.querySelector('.monday');
+const header = document.querySelector('.header');
+>>>>>>> parent of 781b727 (week update)
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -14,7 +21,6 @@ const line_through = 'lineThrough';
 
 const day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-//loading data for the current date
 let itemList = [];
 let id;
 
@@ -57,6 +63,7 @@ overlay.addEventListener('click', closeModal);
 add.addEventListener('click', function (e) {
     const toDo = activity.value;
     const chosenDay = address.value;
+<<<<<<< HEAD
 
     newItem(toDo);
     activity.value = '';
@@ -65,6 +72,40 @@ add.addEventListener('click', function (e) {
     closeModal();
 });
 
+=======
+    const day = chosenDay.split('-');
+
+    if (day[0] == separatedTodayNum[2] && parseInt(day[1], 0) == parseInt(separatedTodayNum[0], 0) && day[2] == separatedTodayNum[1]) {
+        newItem(toDo);
+    }
+
+    const addingDay = `${parseInt(day[1], 0)}/${day[2]}/${day[0]}`;
+
+    let chosenDayList = [];
+    let num;
+
+    let info = localStorage.getItem(addingDay);
+    if (info) {
+        chosenDayList = JSON.parse(info);
+        if (typeof chosenDayList === "string") {
+            chosenDayList = [];
+        }
+        num = chosenDayList.length;
+        loadList(chosenDayList);
+    }
+    else {
+        chosenDayList = [];
+        num = 0;
+    }
+    addingItemChosenDay(toDo, chosenDayList, addingDay, num);
+    console.log(chosenDayList);
+    activity.value = '';
+
+    console.log(toDo, chosenDay);
+    closeModal();
+});
+// when modal is open, enter closes the modal
+>>>>>>> parent of 781b727 (week update)
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
         closeModal();
@@ -154,7 +195,6 @@ list.addEventListener('click', function (e) {
     const element = e.target;
     let job = '';
     let check = '';
-
     try {
         job = element.attributes.job.value;
     }
@@ -185,4 +225,53 @@ document.addEventListener("keyup", function (even) {
     }
 });
 
+<<<<<<< HEAD
 
+=======
+// change color on nav when hovered
+const handleHover = function (e) {
+    if (e.target.classList.contains('nav__link')) {
+        const link = e.target;
+        const sibling = link.closest('nav').querySelectorAll('.nav__link');
+
+        sibling.forEach(el => {
+            if (el !== link) el.style.opacity = this;
+        })
+    }
+};
+
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+// allows the nav to direct to the correct location
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (e.target.classList.contains('nav__link')) {
+        const id = e.target.getAttribute('href');
+        if (id !== '#') {
+            document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+});
+
+const navheight = nav.getBoundingClientRect().height;
+
+/* adding a sticky navigtion header*/
+const stickyNav = function (entries) {
+    const [entry] = entries;
+    if (!entry.isIntersecting) {
+        nav.classList.add('sticky');
+    }
+    else {
+        nav.classList.remove('sticky');
+    }
+};
+
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+    root: null,
+    threshold: 0,
+    rootMargin: `-${navheight}px`,
+});
+headerObserver.observe(header);
+>>>>>>> parent of 781b727 (week update)
