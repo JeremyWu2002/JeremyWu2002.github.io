@@ -4,14 +4,6 @@ const list = document.getElementById('list');
 const input = document.getElementById('input');
 const finished = document.querySelectorAll('input[type=checkbox]');
 const add = document.querySelector('.btn');
-<<<<<<< HEAD
-const nav = document.querySelector('.nav');
-const container = document.querySelector('.container');
-const monday = document.querySelector('.monday');
-const header = document.querySelector('.header');
-const display = document.getElementById('display');
-=======
->>>>>>> parent of 0d8894b (add to do button working)
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -65,49 +57,14 @@ overlay.addEventListener('click', closeModal);
 add.addEventListener('click', function (e) {
     const toDo = activity.value;
     const chosenDay = address.value;
-<<<<<<< HEAD
-    const day = chosenDay.split('-');
-    if (day[0] == separatedTodayNum[2] && parseInt(day[1], 0) == parseInt(separatedTodayNum[0], 0) && day[2] == separatedTodayNum[1]) {
-        console.log('entered')
-        newItem(toDo);
-    }
-    else {
-        const addingDay = `${parseInt(day[1], 0)}/${day[2]}/${day[0]}`;
-
-        let chosenDayList = [];
-        let num;
-
-        let info = localStorage.getItem(addingDay);
-        if (info) {
-            chosenDayList = JSON.parse(info);
-            if (typeof chosenDayList === "string") {
-                chosenDayList = [];
-            }
-            num = chosenDayList.length;
-            loadList(chosenDayList);
-        }
-        else {
-            chosenDayList = [];
-            num = 0;
-        }
-        addingItemChosenDay(toDo, chosenDayList, addingDay, num);
-        console.log(chosenDayList);
-        activity.value = '';
-=======
 
     newItem(toDo);
     activity.value = '';
->>>>>>> parent of 0d8894b (add to do button working)
 
-        console.log(toDo, chosenDay);
-    }
+    console.log(toDo, chosenDay);
     closeModal();
 });
 
-<<<<<<< HEAD
-// when modal is open, enter closes the modal
-=======
->>>>>>> parent of 0d8894b (add to do button working)
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
         closeModal();
@@ -229,110 +186,3 @@ document.addEventListener("keyup", function (even) {
 });
 
 
-<<<<<<< HEAD
-// allows the nav to direct to the correct location
-document.querySelector('.nav__links').addEventListener('click', function (e) {
-    e.preventDefault();
-    if (e.target.classList.contains('nav__link')) {
-        const id = e.target.getAttribute('href');
-        if (id !== '#') {
-            document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-});
-
-const navheight = nav.getBoundingClientRect().height;
-
-/* adding a sticky navigtion header*/
-const stickyNav = function (entries) {
-    const [entry] = entries;
-    if (!entry.isIntersecting) {
-        nav.classList.add('sticky');
-    }
-    else {
-        nav.classList.remove('sticky');
-    }
-};
-
-const headerObserver = new IntersectionObserver(stickyNav, {
-    root: null,
-    threshold: 0,
-    rootMargin: `-${navheight}px`,
-});
-headerObserver.observe(header);
-
-//showing the number of things to do in the week
-function printWeek() {
-    let add = 7 - currently;
-    let subtract = 0 + currently;
-
-    for (let l = 1; l < add; l++) {
-        const currentDate = `${separatedTodayNum[0]}/${parseInt(separatedTodayNum[1]) + l}/${separatedTodayNum[2]}`;
-        let chosenDayList = [];
-        let num;
-        let info = localStorage.getItem(currentDate);
-
-        const dayBoxId = 'day' + (currently + l)
-        const neededDay = document.getElementById(dayBoxId);
-
-        if (info) {
-            chosenDayList = JSON.parse(info);
-            if (typeof chosenDayList === "string") {
-                chosenDayList = [];
-            }
-            num = chosenDayList.length;
-            loadList(chosenDayList);
-        }
-        else {
-            chosenDayList = [];
-            num = 0;
-        }
-        if (chosenDayList.length === 0) {
-            neededDay.insertAdjacentHTML('afterbegin', '<h3 id="display">Nothing to do</h3>');
-        }
-        else {
-            neededDay.insertAdjacentHTML('afterbegin', `<h2 id="display">${chosenDayList.length} thing(s) to do</h2>`);
-        }
-
-    }
-    for (let l = 0; l <= subtract; l++) {
-        const currentDate = `${separatedTodayNum[0]}/${parseInt(separatedTodayNum[1]) - l}/${separatedTodayNum[2]}`;
-        let chosenDayList = [];
-        let num;
-
-        const dayBoxId = 'day' + (currently - l + 1)
-        const neededDay = document.getElementById(dayBoxId);
-
-        let info = localStorage.getItem(currentDate);
-        if (info) {
-            chosenDayList = JSON.parse(info);
-            if (typeof chosenDayList === "string") {
-                chosenDayList = [];
-            }
-            num = chosenDayList.length;
-            loadList(chosenDayList);
-        }
-        else {
-            chosenDayList = [];
-            num = 0;
-        }
-        if (chosenDayList.length === 0) {
-            neededDay.insertAdjacentHTML('afterbegin', '<h3 id="display">Nothing to do</h3>');
-        }
-        else {
-            neededDay.insertAdjacentHTML('afterbegin', `<h5 id="display">${chosenDayList.length} thing(s) to do</h5>`);
-        }
-    }
-}
-
-printWeek();
-function addNothing(daily, date) {
-
-
-}
-
-function addSomething() {
-
-}
-=======
->>>>>>> parent of 0d8894b (add to do button working)
