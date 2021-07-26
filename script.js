@@ -20,7 +20,7 @@ const day = ['Monday,', 'Tuesday,', 'Wednesday,', 'Thursday,', 'Friday,', 'Satur
 const thirtyOneDays = ['1', '3', '5', '7', '8', '10', '12'];
 const thirtyDays = ['4', '6', '9', '11'];
 const february = '2';
-let daysInMonth = 31;
+let daysInMonth = 0;
 let currently = 0;
 let wantedDay = 0;
 
@@ -54,6 +54,24 @@ else {
     id = 0;
 }
 
+function findDaysinMonth(currentMonth) {
+    for (let p = 0; p < thirtyOneDays.length; p++) {
+        if (thirtyOneDays[p] == currentMonth) {
+            daysInMonth = 31;
+        }
+    }
+    for (let p = 0; p < thirtyDays.length; p++) {
+        if (thirtyDays[p] == currentMonth) {
+            daysInMonth = 30;
+        }
+    }
+    if (february == currentMonth) {
+        daysInMonth = 28;
+    }
+    else if (february == currentMonth && parseInt(currentMonth) % 4 === 0) {
+        daysInMonth = 29;
+    }
+}
 /*find what day of the week it is*/
 function findTodayindex() {
     for (let l = 0; l < day.length; l++) {
@@ -137,7 +155,6 @@ function addItem(item, number, done) {
     list.insertAdjacentHTML(position, container);
     const newItem = document.querySelectorAll('.item');
     newItem[newItem.length - 1].insertAdjacentHTML(position, required);
-
 };
 
 // removing item from the list
@@ -145,6 +162,7 @@ const removeItem = function (element) {
     /* be able to delete from itemList array to have localStorage work*/
     const position = element.parentNode.childNodes;
     const parent = position[1].removeChild(position[1].childNodes[0]);
+    console.log(parent);
     localStorage.removeItem(numericDate, parent);
     for (let l = 0; l < itemList.length; l++) {
         if (element.id == itemList[l].each) {
@@ -176,7 +194,9 @@ const completeItem = function (element) {
 
 //clearing the list
 const clear = function () {
-    localStorage.clear();
+    for (let p = 0; p < itemList.length; p++) {
+        localStorage.removeItem(numericDate, itemList[p].name);
+    }
     location.reload();
 };
 
@@ -298,14 +318,24 @@ headerObserver.observe(header);
 function printWeek() {
     let add = 7 - currently;
     let subtract = 0 + currently;
-
+    findDaysinMonth(parseInt(separatedTodayNum[0]));
     for (let l = 1; l < add; l++) {
-        const currentDate = `${separatedTodayNum[0]}/${parseInt(separatedTodayNum[1]) + l}/${separatedTodayNum[2]}`;
+        let dayDate = parseInt(separatedTodayNum[1]) + l;
+        if (dayDate > daysInMonth) {
+            if (separatedTodayNum[0] == '12') {
+                findDaysinMonth(1);
+            }
+            else {
+                findDaysinMonth(parseInt(separatedTodayNum[0]) + 1);
+            }
+            dayDate = dayDate - daysInMonth;
+        }
+        const currentDate = `${separatedTodayNum[0]}/${dayDate}/${separatedTodayNum[2]}`;
         let chosenDayList = [];
         let num;
         let info = localStorage.getItem(currentDate);
 
-        const dayBoxId = 'day' + (currently + l)
+        const dayBoxId = 'day' + (currently + l + 1)
         const neededDay = document.getElementById(dayBoxId);
 
         if (info) {
@@ -323,18 +353,28 @@ function printWeek() {
             neededDay.insertAdjacentHTML('afterbegin', '<h3 id="display">Nothing to do</h3>');
         }
         else {
-            neededDay.insertAdjacentHTML('afterbegin', `<h2 id="display">${chosenDayList.length} thing(s) to do</h2>`);
+            neededDay.insertAdjacentHTML('afterbegin', `<h5 id="display">${chosenDayList.length} thing(s) to do</h2>`);
         }
 
     }
     for (let l = 0; l <= subtract; l++) {
-        const currentDate = `${separatedTodayNum[0]}/${parseInt(separatedTodayNum[1]) - l}/${separatedTodayNum[2]}`;
+        let dayDate = parseInt(separatedTodayNum[1]) - l;
+        if (dayDate < 1) {
+            if (separatedTodayNum[0] == '1') {
+                findDaysinMonth(12);
+            }
+            else {
+                findDaysinMonth(parseInt(separatedTodayNum[0]) + 1);
+            }
+            dayDate = daysInMonth + dayDate;
+        }
+        console.log(dayDate);
+        const currentDate = `${separatedTodayNum[0]}/${dayDate}/${separatedTodayNum[2]}`;
         let chosenDayList = [];
         let num;
 
         const dayBoxId = 'day' + (currently - l + 1)
         const neededDay = document.getElementById(dayBoxId);
-
         let info = localStorage.getItem(currentDate);
         if (info) {
             chosenDayList = JSON.parse(info);
@@ -357,11 +397,3 @@ function printWeek() {
 }
 
 printWeek();
-function addNothing(daily, date) {
-
-
-}
-
-function addSomething() {
-
-}
