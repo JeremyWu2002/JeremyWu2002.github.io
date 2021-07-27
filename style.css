@@ -829,5 +829,22 @@ background: none;
 .dailyDate
 {
 font-size: 28px;
-margin: -58px 20px;
+margin: -58px 15px;
+}
+.dailyReset {
+background-color: white; /* Green */
+border: 2px solid var(--color-primary);
+padding: 15px 32px;
+text-align: center;
+display: inline-block;
+font-size: 14px;
+margin: 10px 275px;
+cursor: pointer;
+border-radius: 8px;
+transition-duration: 0.4s;
+}
+
+.dailyReset:hover{
+background-color: var(--color-primary);
+color: white;
 }

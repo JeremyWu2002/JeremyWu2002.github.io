@@ -1,6 +1,7 @@
 const reset = document.querySelector('.reset');
 const dateElement = document.querySelector('.date');
 const list = document.getElementById('list');
+const extraList = document.getElementById('extraList');
 const input = document.getElementById('input');
 const finished = document.querySelectorAll('input[type=checkbox]');
 const add = document.querySelector('.btn');
@@ -11,8 +12,9 @@ const header = document.querySelector('.header');
 const dailyContainer = document.querySelector('.dailyContainer');
 const btnCloseContainer = document.querySelector('.btn--close-container');
 const dailyDate = document.querySelector('.dailyDate');
-
-const view1 = document.querySelector('.view1');
+const week = document.querySelectorAll('.daybox');
+let eachDay = [];
+week.forEach(element => eachDay.push(element.lastElementChild));
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -52,7 +54,7 @@ if (data) {
         itemList = [];
     }
     id = itemList.length;
-    loadList(itemList);
+    loadList(itemList, 'list');
 }
 else {
     itemList = [];
@@ -144,7 +146,8 @@ document.addEventListener('keydown', function (e) {
 });
 
 // adding item to the list
-function addItem(item, number, done) {
+function addItem(item, number, done, listName) {
+    const addingList = document.getElementById(listName);
     const line = done ? line_through : '';
     const required =
         `   <label class="thing ${line}"> ${item} 
@@ -156,8 +159,8 @@ function addItem(item, number, done) {
     const position = 'beforeend';
     const container = '<li class="item">';
 
-    list.insertAdjacentHTML(position, container);
-    const newItem = document.querySelectorAll('.item');
+    addingList.insertAdjacentHTML(position, container);
+    const newItem = addingList.querySelectorAll('.item');
     newItem[newItem.length - 1].insertAdjacentHTML(position, required);
 };
 
@@ -206,16 +209,16 @@ const clear = function () {
 };
 
 //loading list from the local storage
-function loadList(array) {
+function loadList(array, listName) {
     if (array) {
-        array.forEach(element => addItem(element.name, element.each, element.finished));
+        array.forEach(element => addItem(element.name, element.each, element.finished, listName));
     }
 };
 
 /* adding new item to the local storage*/
 function newItem(adding) {
     if (adding) {
-        addItem(adding, id, false)
+        addItem(adding, id, false, 'list')
         itemList.push({
             name: adding,
             each: id,
@@ -256,6 +259,7 @@ list.addEventListener('click', function (e) {
         completeItem(element);
     }
     localStorage.setItem(numericDate, JSON.stringify(itemList));
+
 });
 
 //clearing when the reset button is clicked
@@ -263,7 +267,7 @@ reset.addEventListener('click', function (e) {
     clear();
 });
 
-//adding list to the listem when the neter key is hit
+//adding item to the list when the enter key is hit
 document.addEventListener("keyup", function (even) {
     if (event.keyCode === 13) {
         const toDo = input.value;
@@ -416,9 +420,27 @@ function printWeek() {
 }
 printWeek();
 
-view1.addEventListener('click', function (e) {
+eachDay.forEach(btn => btn.addEventListener('click', function (e) {
     openContainer();
     const btnNum = parseInt(e.target.className.split('view')[1]);
+    containerContent(btnNum);
+}));
+
+overlay.addEventListener('click', closeContainer);
+btnCloseContainer.addEventListener('click', closeContainer);
+
+function closeContainer() {
+
+    overlay.classList.add('hidden');
+    dailyContainer.classList.add('hidden');
+}
+
+function openContainer() {
+    overlay.classList.remove('hidden');
+    dailyContainer.classList.remove('hidden');
+}
+
+function containerContent(btnNum) {
     const change = btnNum - (currently + 1);
     let dayDate = parseInt(separatedTodayNum[1]) + change;
     let monthDate = separatedTodayNum[0];
@@ -447,24 +469,31 @@ view1.addEventListener('click', function (e) {
         }
         dayDate = daysInMonth + dayDate;
     }
-    dayClicked = day[currently + change];
-    monthClicked = month[monthDate - 1];
-    console.log(dayClicked, monthClicked);
+    let findDay = currently + change;
+    if (findDay > 6) {
+        findDay = findDay - 7;
+    }
+    const dayClicked = day[findDay];
+    const monthClicked = month[monthDate - 1];
     dailyDate.innerHTML = `${dayClicked} ${monthClicked} ${dayDate}`;
     if (dayDate < 10) {
         dayDate = '0' + dayDate;
     }
     const currentDate = `${monthDate}/${dayDate}/${yearDate}`;
-});
-overlay.addEventListener('click', closeContainer);
-btnCloseContainer.addEventListener('click', closeContainer);
+    let dailyList = [];
+    let daily;
 
-function closeContainer() {
-    overlay.classList.add('hidden');
-    dailyContainer.classList.add('hidden');
-}
-
-function openContainer() {
-    overlay.classList.remove('hidden');
-    dailyContainer.classList.remove('hidden');
+    let dailyData = localStorage.getItem(currentDate);
+    if (dailyData) {
+        dailyList = JSON.parse(dailyData);
+        if (typeof dailyList === "string") {
+            dailyList = [];
+        }
+        daily = dailyList.length;
+        loadList(dailyList, 'extraList');
+    }
+    else {
+        dailyList = [];
+        daily = 0;
+    }
 }
