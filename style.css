@@ -825,3 +825,9 @@ cursor: pointer;
 border: none;
 background: none;
 }
+
+.dailyDate
+{
+font-size: 28px;
+margin: -58px 20px;
+}

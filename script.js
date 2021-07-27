@@ -10,6 +10,7 @@ const monday = document.querySelector('.monday');
 const header = document.querySelector('.header');
 const dailyContainer = document.querySelector('.dailyContainer');
 const btnCloseContainer = document.querySelector('.btn--close-container');
+const dailyDate = document.querySelector('.dailyDate');
 
 const view1 = document.querySelector('.view1');
 
@@ -159,6 +160,7 @@ function addItem(item, number, done) {
     const newItem = document.querySelectorAll('.item');
     newItem[newItem.length - 1].insertAdjacentHTML(position, required);
 };
+
 
 // removing item from the list
 const removeItem = function (element) {
@@ -414,13 +416,48 @@ function printWeek() {
 }
 printWeek();
 
-view1.addEventListener('click', daily);
+view1.addEventListener('click', function (e) {
+    openContainer();
+    const btnNum = parseInt(e.target.className.split('view')[1]);
+    const change = btnNum - (currently + 1);
+    let dayDate = parseInt(separatedTodayNum[1]) + change;
+    let monthDate = separatedTodayNum[0];
+    let yearDate = separatedTodayNum[2];
+    if (dayDate > daysInMonth) {
+        dayDate = dayDate - daysInMonth;
+        if (monthDate == '12') {
+            findDaysinMonth(1);
+            monthDate = 1;
+            yearDate++;
+        }
+        else {
+            findDaysinMonth(parseInt(separatedTodayNum[0]) + 1);
+            monthDate++;
+        }
+    }
+    else if (dayDate < 1) {
+        if (separatedTodayNum[0] == '1') {
+            yearDate--;
+            findDaysinMonth(12);
+            monthDate = 12;
+        }
+        else {
+            findDaysinMonth(monthDate - 1);
+            monthDate--;
+        }
+        dayDate = daysInMonth + dayDate;
+    }
+    dayClicked = day[currently + change];
+    monthClicked = month[monthDate - 1];
+    console.log(dayClicked, monthClicked);
+    dailyDate.innerHTML = `${dayClicked} ${monthClicked} ${dayDate}`;
+    if (dayDate < 10) {
+        dayDate = '0' + dayDate;
+    }
+    const currentDate = `${monthDate}/${dayDate}/${yearDate}`;
+});
 overlay.addEventListener('click', closeContainer);
 btnCloseContainer.addEventListener('click', closeContainer);
-function daily() {
-    openContainer();
-    console.log(view1.name);
-}
 
 function closeContainer() {
     overlay.classList.add('hidden');
