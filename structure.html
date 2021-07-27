@@ -48,7 +48,6 @@
         </div>
     </section>
 
-    <div class="overlay hidden"></div>
 
     <section class="week" id="week">
         <div class="monday">
@@ -56,7 +55,7 @@
                 <h4>Monday</h4>
             </div>
             <div class="daybox" id="day1">
-                <button class="view">View</button>
+                <button class="view1">View</button>
             </div>
         </div>
         <div class="tuesday">
@@ -64,7 +63,7 @@
                 <h4>Tuesday</h4>
             </div>
             <div class="daybox" id="day2">
-                <button class="view">View</button>
+                <button class="view2">View</button>
             </div>
         </div>
         <div class="wednesday">
@@ -72,7 +71,7 @@
                 <h4>Wednesday</h4>
             </div>
             <div class="daybox" id="day3">
-                <button class="view">View</button>
+                <button class="view3">View</button>
             </div>
         </div>
         <div class="thursday">
@@ -80,7 +79,7 @@
                 <h4>Thurday</h4>
             </div>
             <div class="daybox" id="day4">
-                <button class="view">View</button>
+                <button class="view4">View</button>
             </div>
         </div>
         <div class="friday">
@@ -88,7 +87,7 @@
                 <h4>Friday</h4>
             </div>
             <div class="daybox" id="day5">
-                <button class="view">View</button>
+                <button class="view5">View</button>
             </div>
         </div>
         <div class="saturday">
@@ -96,7 +95,7 @@
                 <h4>Saturday</h4>
             </div>
             <div class="daybox" id="day6">
-                <button class="view">View</button>
+                <button class="view6">View</button>
             </div>
         </div>
         <div class="sunday">
@@ -104,7 +103,7 @@
                 <h4>Sunday</h4>
             </div>
             <div class="daybox" id="day7">
-                <button class="view">View</button>
+                <button class="view7">View</button>
             </div>
         </div>
 
@@ -115,7 +114,7 @@
                 <h4>Monday</h4>
             </div>
             <div class="daybox" id="day8">
-                <button class="view">View</button>
+                <button class="view8">View</button>
             </div>
         </div>
         <div class="tuesday">
@@ -123,7 +122,7 @@
                 <h4>Tuesday</h4>
             </div>
             <div class="daybox" id="day9">
-                <button class="view">View</button>
+                <button class="view9">View</button>
             </div>
         </div>
         <div class="wednesday">
@@ -131,7 +130,7 @@
                 <h4>Wednesday</h4>
             </div>
             <div class="daybox" id="day10">
-                <button class="view">View</button>
+                <button class="view10">View</button>
             </div>
         </div>
         <div class="thursday">
@@ -139,7 +138,7 @@
                 <h4>Thurday</h4>
             </div>
             <div class="daybox" id="day11">
-                <button class="view">View</button>
+                <button class="view11">View</button>
             </div>
         </div>
         <div class="friday">
@@ -147,7 +146,7 @@
                 <h4>Friday</h4>
             </div>
             <div class="daybox" id="day12">
-                <button class="view">View</button>
+                <button class="view12">View</button>
             </div>
         </div>
         <div class="saturday">
@@ -155,7 +154,7 @@
                 <h4>Saturday</h4>
             </div>
             <div class="daybox" id="day13">
-                <button class="view">View</button>
+                <button class="view13">View</button>
             </div>
         </div>
         <div class="sunday">
@@ -163,7 +162,7 @@
                 <h4>Sunday</h4>
             </div>
             <div class="daybox" id="day14">
-                <button class="view">View</button>
+                <button class="view14">View</button>
             </div>
         </div>
 
@@ -182,6 +181,25 @@
             <button class="btn">Add</button>
         </form>
     </div>
+    <div class="overlay hidden"></div>
+    <section class="dailyContainer hidden" id="dailyContainer">
+        <div class="day">
+            <div class="clear">
+                <button class="reset">Clear</button>
+                <button class="btn--close-container">&times;</button>
+            </div>
+            <div class="dailyDate"></div>
+        </div>
+        <div class="content">
+            <ul id="list">
+            </ul>
+        </div>
+        <div class="add-to-do">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            <input type="text" id="dailyInput" placeholder="Add a to-do">
+        </div>
+    </section>
+
     <script defer src="script.js"></script>
 </body>
 

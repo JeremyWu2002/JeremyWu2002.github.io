@@ -8,6 +8,10 @@ const nav = document.querySelector('.nav');
 const container = document.querySelector('.container');
 const monday = document.querySelector('.monday');
 const header = document.querySelector('.header');
+const dailyContainer = document.querySelector('.dailyContainer');
+const btnCloseContainer = document.querySelector('.btn--close-container');
+
+const view1 = document.querySelector('.view1');
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -17,6 +21,7 @@ const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const line_through = 'lineThrough';
 
 const day = ['Monday,', 'Tuesday,', 'Wednesday,', 'Thursday,', 'Friday,', 'Saturday,', 'Sunday,'];
+const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const thirtyOneDays = ['1', '3', '5', '7', '8', '10', '12'];
 const thirtyDays = ['4', '6', '9', '11'];
 const february = '2';
@@ -27,7 +32,6 @@ let wantedDay = 0;
 /* finding today's date and separating it into arrays*/
 const options = { weekday: "long", month: "short", day: "numeric" };
 const date = new Date();
-
 dateElement.innerHTML = date.toLocaleDateString("en-US", options);
 const words = date.toLocaleDateString("en-US", options);
 const numericDate = date.toLocaleDateString();
@@ -98,6 +102,7 @@ btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
 btnCloseModal.addEventListener('click', closeModal);
 overlay.addEventListener('click', closeModal);
 add.addEventListener('click', function (e) {
+    console.log('entered');
     const toDo = activity.value;
     const chosenDay = address.value;
     const day = chosenDay.split('-');
@@ -124,10 +129,8 @@ add.addEventListener('click', function (e) {
             num = 0;
         }
         addingItemChosenDay(toDo, chosenDayList, addingDay, num);
-        console.log(chosenDayList);
+        console.log(chosenDayList, addingDay);
         activity.value = '';
-
-        console.log(toDo, chosenDay);
     }
     closeModal();
 });
@@ -316,28 +319,35 @@ headerObserver.observe(header);
 
 //showing the number of things to do in the week
 function printWeek() {
-    let add = 7 - currently;
+    let add = 14 - currently;
     let subtract = 0 + currently;
     findDaysinMonth(parseInt(separatedTodayNum[0]));
     for (let l = 1; l < add; l++) {
         let dayDate = parseInt(separatedTodayNum[1]) + l;
+        let monthDate = separatedTodayNum[0];
+        let yearDate = separatedTodayNum[2];
         if (dayDate > daysInMonth) {
-            if (separatedTodayNum[0] == '12') {
+            dayDate = dayDate - daysInMonth;
+            if (monthDate == '12') {
                 findDaysinMonth(1);
+                monthDate = 1;
+                yearDate++;
             }
             else {
                 findDaysinMonth(parseInt(separatedTodayNum[0]) + 1);
+                monthDate++;
             }
-            dayDate = dayDate - daysInMonth;
         }
-        const currentDate = `${separatedTodayNum[0]}/${dayDate}/${separatedTodayNum[2]}`;
+        if (dayDate < 10) {
+            dayDate = '0' + dayDate;
+        }
+        const currentDate = `${monthDate}/${dayDate}/${yearDate}`;
         let chosenDayList = [];
         let num;
         let info = localStorage.getItem(currentDate);
 
-        const dayBoxId = 'day' + (currently + l + 1)
+        const dayBoxId = 'day' + (currently + l + 1);
         const neededDay = document.getElementById(dayBoxId);
-
         if (info) {
             chosenDayList = JSON.parse(info);
             if (typeof chosenDayList === "string") {
@@ -359,17 +369,24 @@ function printWeek() {
     }
     for (let l = 0; l <= subtract; l++) {
         let dayDate = parseInt(separatedTodayNum[1]) - l;
+        let monthDate = separatedTodayNum[0];
+        let yearDate = separatedTodayNum[2];
         if (dayDate < 1) {
             if (separatedTodayNum[0] == '1') {
+                yearDate--;
                 findDaysinMonth(12);
+                monthDate = 12;
             }
             else {
-                findDaysinMonth(parseInt(separatedTodayNum[0]) + 1);
+                findDaysinMonth(monthDate - 1);
+                monthDate--;
             }
             dayDate = daysInMonth + dayDate;
         }
-        console.log(dayDate);
-        const currentDate = `${separatedTodayNum[0]}/${dayDate}/${separatedTodayNum[2]}`;
+        if (dayDate < 10) {
+            dayDate = '0' + dayDate;
+        }
+        const currentDate = `${monthDate}/${dayDate}/${yearDate}`;
         let chosenDayList = [];
         let num;
 
@@ -395,5 +412,22 @@ function printWeek() {
         }
     }
 }
-
 printWeek();
+
+view1.addEventListener('click', daily);
+overlay.addEventListener('click', closeContainer);
+btnCloseContainer.addEventListener('click', closeContainer);
+function daily() {
+    openContainer();
+    console.log(view1.name);
+}
+
+function closeContainer() {
+    overlay.classList.add('hidden');
+    dailyContainer.classList.add('hidden');
+}
+
+function openContainer() {
+    overlay.classList.remove('hidden');
+    dailyContainer.classList.remove('hidden');
+}
