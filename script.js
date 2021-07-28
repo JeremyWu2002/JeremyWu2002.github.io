@@ -119,7 +119,7 @@ add.addEventListener('click', function (e) {
     const day = chosenDay.split('-');
     if (day[0] == separatedTodayNum[2] && parseInt(day[1], 0) == parseInt(separatedTodayNum[0], 0) && day[2] == separatedTodayNum[1]) {
         console.log('entered')
-        newItem(toDo, 'list', itemList, numericDate);
+        id = newItem(toDo, 'list', itemList, numericDate, id);
     }
     else {
         const addingDay = `${parseInt(day[1], 0)}/${day[2]}/${day[0]}`;
@@ -139,7 +139,7 @@ add.addEventListener('click', function (e) {
             chosenDayList = [];
             num = 0;
         }
-        addingItemChosenDay(toDo, chosenDayList, addingDay, num);
+        id = addingItemChosenDay(toDo, chosenDayList, addingDay, id);
         console.log(chosenDayList, addingDay);
         activity.value = '';
     }
@@ -174,38 +174,40 @@ function addItem(item, number, done, listName) {
 
 
 // removing item from the list
-const removeItem = function (element) {
+const removeItem = function (element, neededDate, neededArray) {
     /* be able to delete from itemList array to have localStorage work*/
     const position = element.parentNode.childNodes;
     const parent = position[1].removeChild(position[1].childNodes[0]);
-    console.log(parent);
-    localStorage.removeItem(numericDate, parent);
-    for (let l = 0; l < itemList.length; l++) {
-        if (element.id == itemList[l].each) {
-            const temp = itemList.slice(l + 1, itemList.length)
-            itemList = itemList.slice(0, l);
+    localStorage.removeItem(neededDate, parent);
+    for (let l = 0; l < neededArray.length; l++) {
+        if (element.id == neededArray[l].each) {
+            const temp = neededArray.slice(l + 1, neededArray.length)
+            neededArray = neededArray.slice(0, l);
             for (let m = 0; m < temp.length; m++) {
-                itemList.push(temp[m]);
+                neededArray.push(temp[m]);
             }
         }
     }
     element.parentNode.parentNode.removeChild(element.parentNode);
+    return neededArray;
 };
 
 // adding line through to completed items
-const completeItem = function (element) {
+const completeItem = function (element, arrayName) {
     element.parentNode.classList.toggle(line_through);
-
-    for (let u = 0; u < itemList.length; u++) {
-        if (element.id == itemList[u].each) {
-            if (itemList[u].finished) {
-                itemList[u].finished = false;
+    console.log(element);
+    for (let u = 0; u < arrayName.length; u++) {
+        console.log(element.id, arrayName[u].each)
+        if (element.id == arrayName[u].each) {
+            if (arrayName[u].finished) {
+                arrayName[u].finished = false;
             }
             else {
-                itemList[u].finished = true;
+                arrayName[u].finished = true;
             }
         }
     }
+    return arrayName;
 };
 
 //clearing the list
@@ -223,17 +225,18 @@ function loadList(array, listName) {
 };
 
 /* adding new item to the local storage*/
-function newItem(adding, listName, neededList, neededDate) {
+function newItem(adding, listName, neededList, neededDate, num) {
     if (adding) {
-        addItem(adding, id, false, listName)
+        addItem(adding, num, false, listName)
         neededList.push({
             name: adding,
-            each: id,
+            each: num,
             finished: false,
         })
         localStorage.setItem(neededDate, JSON.stringify(neededList));
-        id++;
+        num++;
     }
+    return num;
 }
 
 function addingItemChosenDay(adding, list, date, num) {
@@ -244,15 +247,15 @@ function addingItemChosenDay(adding, list, date, num) {
             finished: false,
         })
         localStorage.setItem(date, JSON.stringify(list));
-        id++;
+        num++;
     }
+    return num;
 }
 //linking clicks on items to functions
 list.addEventListener('click', function (e) {
     const element = e.target;
     let job = '';
     let check = '';
-
     try {
         job = element.attributes.job.value;
     }
@@ -260,13 +263,13 @@ list.addEventListener('click', function (e) {
         check = element.tagName;
     }
     if (job && job === 'delete') {
-        removeItem(element);
+        const tempArray = removeItem(element, numericDate, itemList);
+        localStorage.setItem(numericDate, JSON.stringify(tempArray));
     }
     if (check && check === 'INPUT') {
-        completeItem(element);
+        const tempArray = completeItem(element, itemList);
+        localStorage.setItem(numericDate, JSON.stringify(tempArray));
     }
-    localStorage.setItem(numericDate, JSON.stringify(itemList));
-
 });
 
 //clearing when the reset button is clicked
@@ -281,7 +284,7 @@ document.addEventListener("keyup", function (even) {
         if (dailyContainer.classList.contains('hidden')) {
             const toDo = input.value;
 
-            newItem(toDo, 'list', itemList, numericDate);
+            id = newItem(toDo, 'list', itemList, numericDate, id);
             input.value = '';
         }
     }
@@ -446,7 +449,6 @@ overlay.addEventListener('click', closeContainer);
 btnCloseContainer.addEventListener('click', closeContainer);
 
 function closeContainer() {
-
     overlay.classList.add('hidden');
     dailyContainer.classList.add('hidden');
     const information = ['false', wordCurrentDate, currentDate];
@@ -521,9 +523,29 @@ document.addEventListener("keyup", function (even) {
     if (event.keyCode === 13) {
         if (!dailyContainer.classList.contains('hidden')) {
             const toDo = dailyInput.value;
-            newItem(toDo, 'extraList', dailyList, currentDate);
+            daily = newItem(toDo, 'extraList', dailyList, currentDate, daily);
             dailyInput.value = '';
         }
+    }
+});
+
+extraList.addEventListener('click', function (e) {
+    const element = e.target;
+    let job = '';
+    let check = '';
+    try {
+        job = element.attributes.job.value;
+    }
+    catch (error) {
+        check = element.tagName;
+    }
+    if (job && job === 'delete') {
+        const tempArray = removeItem(element, currentDate, dailyList);
+        localStorage.setItem(currentDate, JSON.stringify(tempArray));
+    }
+    if (check && check === 'INPUT') {
+        const tempArray = completeItem(element, dailyList);
+        localStorage.setItem(currentDate, JSON.stringify(tempArray));
     }
 });
 
