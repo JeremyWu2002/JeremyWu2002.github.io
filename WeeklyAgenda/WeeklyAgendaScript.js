@@ -52,7 +52,6 @@ if (separatedTodayNum[1] < 10) {
     numericDate = `${separatedTodayNum[0]}/${separatedTodayNum[1]}/${separatedTodayNum[2]}`;
 }
 
-console.log(numericDate, words, separatedToday, separatedTodayNum);
 
 //loading data for the current date
 let itemList = [];
@@ -71,7 +70,6 @@ else {
     itemList = [];
     id = 0;
 }
-console.log(data);
 
 function findDaysinMonth(currentMonth) {
     for (let p = 0; p < thirtyOneDays.length; p++) {
@@ -117,12 +115,10 @@ btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
 btnCloseModal.addEventListener('click', closeModal);
 overlay.addEventListener('click', closeModal);
 add.addEventListener('click', function (e) {
-    console.log('entered');
     const toDo = activity.value;
     const chosenDay = address.value;
     const day = chosenDay.split('-');
     if (day[0] == separatedTodayNum[2] && parseInt(day[1], 0) == parseInt(separatedTodayNum[0], 0) && day[2] == separatedTodayNum[1]) {
-        console.log('entered')
         id = newItem(toDo, 'list', itemList, numericDate, id);
     }
     else {
@@ -144,7 +140,6 @@ add.addEventListener('click', function (e) {
             num = 0;
         }
         id = addingItemChosenDay(toDo, chosenDayList, addingDay, id);
-        console.log(chosenDayList, addingDay);
         activity.value = '';
     }
     closeModal();
@@ -199,9 +194,7 @@ const removeItem = function (element, neededDate, neededArray) {
 // adding line through to completed items
 const completeItem = function (element, arrayName) {
     element.parentNode.classList.toggle(line_through);
-    console.log(element);
     for (let u = 0; u < arrayName.length; u++) {
-        console.log(element.id, arrayName[u].each)
         if (element.id == arrayName[u].each) {
             if (arrayName[u].finished) {
                 arrayName[u].finished = false;
@@ -275,7 +268,6 @@ list.addEventListener('click', function (e) {
         localStorage.setItem(numericDate, JSON.stringify(tempArray));
     }
 });
-console.log(numericDate, currentDate);
 //clearing when the reset button is clicked
 reset.addEventListener('click', function (e) {
     clear(numericDate, itemList);
@@ -527,7 +519,6 @@ document.addEventListener("keyup", function (even) {
     if (event.keyCode === 13) {
         if (!dailyContainer.classList.contains('hidden')) {
             const toDo = dailyInput.value;
-            console.log(currentDate);
             daily = newItem(toDo, 'extraList', dailyList, currentDate, daily);
             dailyInput.value = '';
         }
