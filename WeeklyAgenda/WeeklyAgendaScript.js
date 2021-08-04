@@ -555,12 +555,13 @@ extraList.addEventListener('click', function (e) {
 });
 
 const check = localStorage.getItem('dailyContainer');
-let test;
+let test = [];
 if (check) {
     test = check.split(',');
+    if (test[0] == 'true') {
+        openContainer();
+        dailyDate.innerHTML = test[1] + test[2];
+    }
+
 }
 
-if (test[0] == 'true') {
-    openContainer();
-    dailyDate.innerHTML = test[1] + test[2];
-}
