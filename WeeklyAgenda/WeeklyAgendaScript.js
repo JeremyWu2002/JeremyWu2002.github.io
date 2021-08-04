@@ -550,7 +550,11 @@ extraList.addEventListener('click', function (e) {
 });
 
 const check = localStorage.getItem('dailyContainer');
-const test = check.split(',');
+
+let test;
+if (check) {
+    test = check.split(',');
+}
 
 if (test[0] == 'true') {
     openContainer();
