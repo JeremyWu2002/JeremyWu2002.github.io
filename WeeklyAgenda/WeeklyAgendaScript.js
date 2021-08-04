@@ -44,9 +44,13 @@ const options = { weekday: "long", month: "short", day: "numeric" };
 const date = new Date();
 dateElement.innerHTML = date.toLocaleDateString("en-US", options);
 const words = date.toLocaleDateString("en-US", options);
-const numericDate = date.toLocaleDateString();
+let numericDate = date.toLocaleDateString();
 const separatedToday = words.split(' ');
 const separatedTodayNum = numericDate.split('/');
+if (separatedTodayNum[1] < 10) {
+    separatedTodayNum[1] = '0' + separatedTodayNum[1];
+    numericDate = `${separatedTodayNum[0]}/${separatedTodayNum[1]}/${separatedTodayNum[2]}`;
+}
 
 console.log(numericDate, words, separatedToday, separatedTodayNum);
 
@@ -271,7 +275,7 @@ list.addEventListener('click', function (e) {
         localStorage.setItem(numericDate, JSON.stringify(tempArray));
     }
 });
-
+console.log(numericDate, currentDate);
 //clearing when the reset button is clicked
 reset.addEventListener('click', function (e) {
     clear(numericDate, itemList);
@@ -523,6 +527,7 @@ document.addEventListener("keyup", function (even) {
     if (event.keyCode === 13) {
         if (!dailyContainer.classList.contains('hidden')) {
             const toDo = dailyInput.value;
+            console.log(currentDate);
             daily = newItem(toDo, 'extraList', dailyList, currentDate, daily);
             dailyInput.value = '';
         }
@@ -550,7 +555,6 @@ extraList.addEventListener('click', function (e) {
 });
 
 const check = localStorage.getItem('dailyContainer');
-
 let test;
 if (check) {
     test = check.split(',');
